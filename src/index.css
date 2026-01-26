@@ -1,96 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Be Connect Housing Management Design System */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core brand colors */
+    --background: 210 20% 98%;
+    --foreground: 213 50% 14%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 213 50% 14%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 213 50% 14%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Navy - Primary brand color */
+    --primary: 213 80% 15%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Cyan - Accent highlights */
+    --secondary: 187 100% 42%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Teal accent */
+    --accent: 187 100% 42%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 213 80% 15%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Custom semantic colors */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    
+    --info: 187 100% 42%;
+    --info-foreground: 0 0% 100%;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Chart colors */
+    --chart-occupied: 187 100% 42%;
+    --chart-vacant: 210 20% 90%;
+    --chart-maintenance: 38 92% 50%;
 
-    --sidebar-primary: 240 5.9% 10%;
+    /* Header gradient */
+    --header-start: 213 80% 15%;
+    --header-end: 213 70% 25%;
 
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 213 50% 14%;
+    --sidebar-primary: 213 80% 15%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 210 20% 96%;
+    --sidebar-accent-foreground: 213 50% 14%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 187 100% 42%;
   }
 }
 
@@ -100,6 +79,80 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Montserrat', sans-serif;
+  }
+}
+
+@layer components {
+  /* Stat card with left accent border */
+  .stat-card {
+    @apply bg-card rounded-xl p-4 shadow-sm border-l-4;
+  }
+  
+  .stat-card-cyan {
+    @apply stat-card border-l-secondary;
+  }
+  
+  .stat-card-warning {
+    @apply stat-card border-l-warning;
+  }
+
+  /* Header gradient */
+  .header-gradient {
+    background: linear-gradient(135deg, hsl(var(--header-start)) 0%, hsl(var(--header-end)) 100%);
+  }
+
+  /* Floating action button */
+  .fab {
+    @apply fixed bottom-24 right-4 w-14 h-14 rounded-full bg-warning text-warning-foreground shadow-lg flex items-center justify-center text-2xl hover:scale-105 transition-transform;
+  }
+
+  /* Bottom navigation */
+  .bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-2 flex justify-around items-center;
+  }
+
+  .bottom-nav-item {
+    @apply flex flex-col items-center gap-1 text-muted-foreground transition-colors;
+  }
+
+  .bottom-nav-item.active {
+    @apply text-secondary;
+  }
+
+  /* Match card */
+  .match-card {
+    @apply bg-card rounded-xl p-4 shadow-sm border border-border;
+  }
+
+  /* Badge variants */
+  .badge-success {
+    @apply bg-success/10 text-success px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .badge-warning {
+    @apply bg-warning/10 text-warning px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .badge-info {
+    @apply bg-info/10 text-info px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  /* Inspection photo container */
+  .inspection-photo {
+    @apply relative rounded-lg overflow-hidden aspect-[4/3];
+  }
+
+  .inspection-label {
+    @apply absolute top-2 left-2 px-2 py-1 rounded text-xs font-semibold;
+  }
+
+  .inspection-label-movein {
+    @apply inspection-label bg-primary text-primary-foreground;
+  }
+
+  .inspection-label-moveout {
+    @apply inspection-label bg-destructive text-destructive-foreground;
   }
 }
