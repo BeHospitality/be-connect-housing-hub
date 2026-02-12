@@ -1,11 +1,11 @@
 import React from 'react';
-import { Bell, ChevronDown } from 'lucide-react';
-import { useAppContext } from '@/context/AppContext';
+import { Bell } from 'lucide-react';
+import { useAppContext, DataMode } from '@/context/AppContext';
 import { AppMode } from '@/types';
 import { Switch } from '@/components/ui/switch';
 
 const ManagerHeader: React.FC = () => {
-  const { appMode, setAppMode } = useAppContext();
+  const { appMode, setAppMode, dataMode, setDataMode } = useAppContext();
 
   return (
     <div className="header-gradient text-primary-foreground p-4">
@@ -42,18 +42,33 @@ const ManagerHeader: React.FC = () => {
           </div>
         </div>
         
-        {/* Mode Toggle */}
-        <div className="flex items-center gap-2 bg-primary-foreground/10 rounded-full px-3 py-1.5">
-          <span className="text-xs font-medium">
-            {appMode === AppMode.MANAGER ? 'Manager' : 'Resident'}
-          </span>
-          <Switch
-            checked={appMode === AppMode.RESIDENT}
-            onCheckedChange={(checked) => 
-              setAppMode(checked ? AppMode.RESIDENT : AppMode.MANAGER)
-            }
-            className="data-[state=checked]:bg-secondary"
-          />
+        <div className="flex items-center gap-3">
+          {/* Demo / Live Toggle */}
+          <button
+            onClick={() => setDataMode(dataMode === 'demo' ? 'live' : 'demo')}
+            className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+              dataMode === 'demo'
+                ? 'bg-warning/20 text-warning'
+                : 'bg-success/20 text-success'
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${dataMode === 'demo' ? 'bg-warning' : 'bg-success animate-pulse'}`} />
+            {dataMode === 'demo' ? 'DEMO' : 'LIVE'}
+          </button>
+
+          {/* Mode Toggle */}
+          <div className="flex items-center gap-2 bg-primary-foreground/10 rounded-full px-3 py-1.5">
+            <span className="text-xs font-medium">
+              {appMode === AppMode.MANAGER ? 'Manager' : 'Resident'}
+            </span>
+            <Switch
+              checked={appMode === AppMode.RESIDENT}
+              onCheckedChange={(checked) => 
+                setAppMode(checked ? AppMode.RESIDENT : AppMode.MANAGER)
+              }
+              className="data-[state=checked]:bg-secondary"
+            />
+          </div>
         </div>
       </div>
     </div>

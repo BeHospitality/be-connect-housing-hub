@@ -5,19 +5,24 @@ import { Button } from '@/components/ui/button';
 import { useAppContext } from '@/context/AppContext';
 import { View, Complex } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
+import { demoComplexes, demoStats, demoBreakdownItems } from '@/lib/demoData';
 import ManagerHeader from './ManagerHeader';
 import StatCard from './StatCard';
 import UnitBreakdown from './UnitBreakdown';
 
 const Dashboard: React.FC = () => {
-  const { setActiveView } = useAppContext();
+  const { setActiveView, dataMode } = useAppContext();
   const [complexes, setComplexes] = useState<Complex[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetchComplexes();
-  }, []);
+    if (dataMode === 'demo') {
+      setComplexes(demoComplexes);
+    } else {
+      fetchComplexes();
+    }
+  }, [dataMode]);
 
   const fetchComplexes = async () => {
     const { data } = await supabase
@@ -30,11 +35,21 @@ const Dashboard: React.FC = () => {
 
   const clients = ['ALL CLIENTS', 'Boca West', 'Ballenisles', 'Mira'];
 
-  const breakdownItems = [
-    { label: 'Occupied', count: 423, percentage: 94, color: 'hsl(187, 100%, 42%)' },
-    { label: 'Vacant', count: 18, percentage: 4, color: 'hsl(210, 20%, 90%)' },
-    { label: 'Maintenance', count: 9, percentage: 2, color: 'hsl(38, 92%, 50%)' },
-  ];
+  const breakdownItems = dataMode === 'demo'
+    ? demoBreakdownItems
+    : [
+        { label: 'Occupied', count: 423, percentage: 94, color: 'hsl(187, 100%, 42%)' },
+        { label: 'Vacant', count: 18, percentage: 4, color: 'hsl(210, 20%, 90%)' },
+        { label: 'Maintenance', count: 9, percentage: 2, color: 'hsl(38, 92%, 50%)' },
+      ];
+
+  const stats = dataMode === 'demo' ? demoStats : {
+    occupancyRate: 94,
+    occupancyTrend: '+2.5%',
+    totalUnits: 450,
+    totalComplexes: 12,
+    onboardingPending: 85,
+  };
 
   return (
     <div className="animate-fade-in">
@@ -71,27 +86,27 @@ const Dashboard: React.FC = () => {
         <div className="grid grid-cols-2 gap-3">
           <StatCard
             title="OCCUPANCY"
-            value="94%"
-            trend={{ value: '+2.5%', direction: 'up' }}
+            value={`${stats.occupancyRate}%`}
+            trend={{ value: stats.occupancyTrend, direction: 'up' }}
             subtitle="vs last mo"
             icon={PieChart}
             variant="cyan"
           />
           <StatCard
             title="TOTAL UNITS"
-            value="450"
+            value={String(stats.totalUnits)}
             subtitle="+10 new units"
             icon={Building2}
           />
           <StatCard
             title="COMPLEXES"
-            value="12"
+            value={String(stats.totalComplexes)}
             subtitle="Active in 4 portfolios"
             icon={Building2}
           />
           <StatCard
             title="ONBOARDING"
-            value="85"
+            value={String(stats.onboardingPending)}
             subtitle="ACTION NEEDED"
             icon={Users}
             variant="warning"

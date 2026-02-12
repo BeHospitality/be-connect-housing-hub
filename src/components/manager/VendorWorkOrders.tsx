@@ -10,6 +10,7 @@ import { View, Issue } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useClientId } from '@/hooks/useClientId';
+import { demoVendorAssignments, demoIssues } from '@/lib/demoData';
 import ManagerHeader from './ManagerHeader';
 
 interface VendorAssignment {
@@ -25,7 +26,7 @@ interface VendorAssignment {
 }
 
 const VendorWorkOrders: React.FC = () => {
-  const { setActiveView } = useAppContext();
+  const { setActiveView, dataMode } = useAppContext();
   const { toast } = useToast();
   const { clientId } = useClientId();
   const [assignments, setAssignments] = useState<VendorAssignment[]>([]);
@@ -40,8 +41,13 @@ const VendorWorkOrders: React.FC = () => {
   });
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (dataMode === 'demo') {
+      setAssignments(demoVendorAssignments as VendorAssignment[]);
+      setIssues(demoIssues);
+    } else {
+      fetchData();
+    }
+  }, [dataMode]);
 
   const fetchData = async () => {
     const [assignmentsRes, issuesRes] = await Promise.all([
@@ -54,6 +60,24 @@ const VendorWorkOrders: React.FC = () => {
 
   const handleAssign = async () => {
     if (!form.issue_id || !form.vendor_name) return;
+
+    if (dataMode === 'demo') {
+      const newAssignment: VendorAssignment = {
+        id: `demo-new-${Date.now()}`,
+        issue_id: form.issue_id,
+        vendor_name: form.vendor_name,
+        vendor_contact: form.vendor_contact || null,
+        notes: form.notes || null,
+        status: 'assigned',
+        assigned_at: new Date().toISOString(),
+        completed_at: null,
+      };
+      setAssignments(prev => [newAssignment, ...prev]);
+      toast({ title: 'Work Order Created', description: `Assigned to ${form.vendor_name}` });
+      setForm({ issue_id: '', vendor_name: '', vendor_contact: '', notes: '' });
+      setDialogOpen(false);
+      return;
+    }
 
     const { error } = await supabase.from('vendor_assignments').insert({
       issue_id: form.issue_id,
@@ -74,6 +98,15 @@ const VendorWorkOrders: React.FC = () => {
   };
 
   const updateStatus = async (id: string, status: string) => {
+    if (dataMode === 'demo') {
+      setAssignments(prev => prev.map(a => a.id === id ? {
+        ...a,
+        status,
+        ...(status === 'completed' ? { completed_at: new Date().toISOString() } : {}),
+      } : a));
+      return;
+    }
+
     await supabase.from('vendor_assignments').update({
       status,
       ...(status === 'completed' ? { completed_at: new Date().toISOString() } : {}),

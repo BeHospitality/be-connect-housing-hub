@@ -9,9 +9,10 @@ import { View, Employee, Gender, SleepSchedule } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useClientId } from '@/hooks/useClientId';
+import { demoEmployees } from '@/lib/demoData';
 
 const EmployeeManagement: React.FC = () => {
-  const { setActiveView } = useAppContext();
+  const { setActiveView, dataMode } = useAppContext();
   const { toast } = useToast();
   const { clientId } = useClientId();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -28,8 +29,12 @@ const EmployeeManagement: React.FC = () => {
   });
 
   useEffect(() => {
-    fetchEmployees();
-  }, []);
+    if (dataMode === 'demo') {
+      setEmployees(demoEmployees);
+    } else {
+      fetchEmployees();
+    }
+  }, [dataMode]);
 
   const fetchEmployees = async () => {
     const { data } = await supabase

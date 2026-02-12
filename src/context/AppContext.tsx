@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { AppMode, View, Employee } from '@/types';
 
+export type DataMode = 'demo' | 'live';
+
 interface AppContextType {
   appMode: AppMode;
   setAppMode: (mode: AppMode) => void;
@@ -12,6 +14,8 @@ interface AppContextType {
   setSelectedEmployeeId: (id: string | null) => void;
   currentResident: Employee | null;
   setCurrentResident: (resident: Employee | null) => void;
+  dataMode: DataMode;
+  setDataMode: (mode: DataMode) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -22,6 +26,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
   const [currentResident, setCurrentResident] = useState<Employee | null>(null);
+  const [dataMode, setDataMode] = useState<DataMode>('demo');
 
   return (
     <AppContext.Provider
@@ -36,6 +41,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setSelectedEmployeeId,
         currentResident,
         setCurrentResident,
+        dataMode,
+        setDataMode,
       }}
     >
       {children}

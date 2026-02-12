@@ -3,20 +3,26 @@ import { MapPin, Calendar, AlertTriangle, User, MessageSquare, ChevronRight, Bui
 import { useAppContext } from '@/context/AppContext';
 import { View, Issue, Employee, Announcement } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
+import { demoIssues, demoEmployees, demoAnnouncements } from '@/lib/demoData';
 import ResidentHeader from './ResidentHeader';
 
 const ResidentHome: React.FC = () => {
-  const { setActiveView } = useAppContext();
+  const { setActiveView, dataMode } = useAppContext();
   const [issues, setIssues] = useState<Issue[]>([]);
   const [housemates, setHousemates] = useState<Employee[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (dataMode === 'demo') {
+      setIssues(demoIssues.slice(0, 3));
+      setHousemates(demoEmployees.filter(e => e.unit_id === demoEmployees[0].unit_id).slice(1, 3));
+      setAnnouncements(demoAnnouncements.slice(0, 2));
+    } else {
+      fetchData();
+    }
+  }, [dataMode]);
 
   const fetchData = async () => {
-    // Fetch issues
     const { data: issuesData } = await supabase
       .from('issues')
       .select('*')
@@ -25,7 +31,6 @@ const ResidentHome: React.FC = () => {
     
     if (issuesData) setIssues(issuesData as Issue[]);
 
-    // Fetch employees as housemates (sample)
     const { data: employeesData } = await supabase
       .from('employees')
       .select('*')
@@ -33,7 +38,6 @@ const ResidentHome: React.FC = () => {
     
     if (employeesData) setHousemates(employeesData as Employee[]);
 
-    // Fetch announcements
     const { data: announcementsData } = await supabase
       .from('announcements')
       .select('*')
@@ -153,7 +157,9 @@ const ResidentHome: React.FC = () => {
               <span className="text-lg">🔧</span>
               <h3 className="font-bold text-foreground">Open Requests</h3>
             </div>
-            <span className="badge-warning">1 New</span>
+            <span className="badge-warning">
+              {issues.filter(i => i.status === 'pending').length} New
+            </span>
           </div>
           
           {issues.length > 0 ? issues.map((issue) => (

@@ -6,9 +6,10 @@ import { View, Inspection, Issue } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useClientId } from '@/hooks/useClientId';
+import { demoInspections, demoIssues, demoEmployees, demoUnits } from '@/lib/demoData';
 
 const FinalStatement: React.FC = () => {
-  const { setActiveView } = useAppContext();
+  const { setActiveView, dataMode } = useAppContext();
   const { toast } = useToast();
   const { clientId } = useClientId();
   const [inspections, setInspections] = useState<Inspection[]>([]);
@@ -18,8 +19,14 @@ const FinalStatement: React.FC = () => {
   const originalDeposit = 3000;
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (dataMode === 'demo') {
+      setInspections(demoInspections.filter(i => i.damage_detected));
+      setIssues(demoIssues.filter(i => i.estimated_cost > 0));
+      setLoading(false);
+    } else {
+      fetchData();
+    }
+  }, [dataMode]);
 
   const fetchData = async () => {
     const [inspectionsRes, issuesRes] = await Promise.all([
@@ -44,8 +51,15 @@ const FinalStatement: React.FC = () => {
   const finalAmount = originalDeposit - totalDeductions;
 
   const handleGenerateStatement = async () => {
+    if (dataMode === 'demo') {
+      toast({
+        title: 'Statement Generated',
+        description: 'Demo security deposit statement has been created.',
+      });
+      return;
+    }
+
     try {
-      // Get a sample employee and unit
       const { data: employees } = await supabase.from('employees').select('id').limit(1);
       const { data: units } = await supabase.from('units').select('id').limit(1);
 
