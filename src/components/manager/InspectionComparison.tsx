@@ -9,12 +9,14 @@ import { View } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useClientId } from '@/hooks/useClientId';
 import { uploadFile } from '@/lib/storage';
 
 const InspectionComparison: React.FC = () => {
   const { setActiveView } = useAppContext();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { clientId } = useClientId();
   const [damageDetected, setDamageDetected] = useState(true);
   const [repairCost, setRepairCost] = useState('125.00');
   const [inspectorNotes, setInspectorNotes] = useState('');
@@ -53,6 +55,7 @@ const InspectionComparison: React.FC = () => {
         inspector_notes: inspectorNotes,
         photo_url: moveOutPhoto,
         status: 'completed',
+        client_id: clientId,
       });
 
       toast({

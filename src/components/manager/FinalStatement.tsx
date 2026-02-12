@@ -5,10 +5,12 @@ import { useAppContext } from '@/context/AppContext';
 import { View, Inspection, Issue } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useClientId } from '@/hooks/useClientId';
 
 const FinalStatement: React.FC = () => {
   const { setActiveView } = useAppContext();
   const { toast } = useToast();
+  const { clientId } = useClientId();
   const [inspections, setInspections] = useState<Inspection[]>([]);
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,6 +61,7 @@ const FinalStatement: React.FC = () => {
         issue_deductions: issueDeductions,
         final_amount: finalAmount,
         status: 'generated',
+        client_id: clientId,
       });
 
       toast({

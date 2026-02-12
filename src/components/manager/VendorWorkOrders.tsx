@@ -9,6 +9,7 @@ import { useAppContext } from '@/context/AppContext';
 import { View, Issue } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useClientId } from '@/hooks/useClientId';
 import ManagerHeader from './ManagerHeader';
 
 interface VendorAssignment {
@@ -26,6 +27,7 @@ interface VendorAssignment {
 const VendorWorkOrders: React.FC = () => {
   const { setActiveView } = useAppContext();
   const { toast } = useToast();
+  const { clientId } = useClientId();
   const [assignments, setAssignments] = useState<VendorAssignment[]>([]);
   const [issues, setIssues] = useState<Issue[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -58,6 +60,7 @@ const VendorWorkOrders: React.FC = () => {
       vendor_name: form.vendor_name,
       vendor_contact: form.vendor_contact || null,
       notes: form.notes || null,
+      client_id: clientId,
     });
 
     if (error) {
