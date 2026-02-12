@@ -5,7 +5,7 @@ import { AppMode } from '@/types';
 import { Switch } from '@/components/ui/switch';
 
 const ResidentHeader: React.FC = () => {
-  const { appMode, setAppMode } = useAppContext();
+  const { appMode, setAppMode, dataMode, setDataMode } = useAppContext();
 
   return (
     <div className="bg-card border-b border-border p-4">
@@ -21,7 +21,20 @@ const ResidentHeader: React.FC = () => {
           <span className="font-bold text-foreground">Be Connect</span>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          {/* Demo / Live Toggle */}
+          <button
+            onClick={() => setDataMode(dataMode === 'demo' ? 'live' : 'demo')}
+            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${
+              dataMode === 'demo'
+                ? 'bg-warning/20 text-warning'
+                : 'bg-success/20 text-success'
+            }`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${dataMode === 'demo' ? 'bg-warning' : 'bg-success animate-pulse'}`} />
+            {dataMode === 'demo' ? 'DEMO' : 'LIVE'}
+          </button>
+
           {/* Mode Toggle */}
           <div className="flex items-center gap-2 bg-muted rounded-full px-2 py-1">
             <span className="text-xs font-medium text-muted-foreground">

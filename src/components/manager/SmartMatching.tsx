@@ -6,6 +6,7 @@ import { View, Employee, Unit } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useClientId } from '@/hooks/useClientId';
+import { demoEmployees, demoUnits } from '@/lib/demoData';
 
 interface MatchPairing {
   employee1: Employee;
@@ -15,7 +16,7 @@ interface MatchPairing {
 }
 
 const SmartMatching: React.FC = () => {
-  const { setActiveView } = useAppContext();
+  const { setActiveView, dataMode } = useAppContext();
   const { toast } = useToast();
   const { clientId } = useClientId();
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -24,8 +25,13 @@ const SmartMatching: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (dataMode === 'demo') {
+      setEmployees(demoEmployees.filter(e => !e.is_assigned));
+      setUnits(demoUnits.filter(u => u.status === 'vacant'));
+    } else {
+      fetchData();
+    }
+  }, [dataMode]);
 
   const fetchData = async () => {
     const [employeesRes, unitsRes] = await Promise.all([

@@ -4,10 +4,11 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { useAppContext } from '@/context/AppContext';
 import { View } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
+import { demoStats, demoIssueTrends } from '@/lib/demoData';
 import ManagerHeader from './ManagerHeader';
 
 const ExecutiveAnalytics: React.FC = () => {
-  const { setActiveView } = useAppContext();
+  const { setActiveView, dataMode } = useAppContext();
   const [stats, setStats] = useState({
     totalUnits: 0,
     occupied: 0,
@@ -24,8 +25,25 @@ const ExecutiveAnalytics: React.FC = () => {
   });
 
   useEffect(() => {
-    fetchAnalytics();
-  }, []);
+    if (dataMode === 'demo') {
+      setStats({
+        totalUnits: demoStats.totalUnits,
+        occupied: demoStats.occupiedUnits,
+        vacant: demoStats.vacantUnits,
+        maintenance: demoStats.maintenanceUnits,
+        totalIssues: 87,
+        resolvedIssues: 72,
+        pendingIssues: 15,
+        avgResolutionDays: demoStats.avgResolutionDays,
+        totalDeposits: demoStats.totalDepositsHeld,
+        totalDeductions: demoStats.totalDeductions,
+        totalRecovered: demoStats.totalRecovered,
+        totalEmployees: demoStats.totalEmployees,
+      });
+    } else {
+      fetchAnalytics();
+    }
+  }, [dataMode]);
 
   const fetchAnalytics = async () => {
     const [unitsRes, issuesRes, depositsRes, employeesRes] = await Promise.all([
@@ -64,14 +82,16 @@ const ExecutiveAnalytics: React.FC = () => {
     { name: 'Maintenance', value: stats.maintenance, color: 'hsl(38, 92%, 50%)' },
   ];
 
-  const issueData = [
-    { name: 'Jan', resolved: 12, pending: 3 },
-    { name: 'Feb', resolved: 15, pending: 2 },
-    { name: 'Mar', resolved: 8, pending: 5 },
-    { name: 'Apr', resolved: 20, pending: 1 },
-    { name: 'May', resolved: 18, pending: 4 },
-    { name: 'Jun', resolved: stats.resolvedIssues || 14, pending: stats.pendingIssues || 3 },
-  ];
+  const issueData = dataMode === 'demo'
+    ? demoIssueTrends
+    : [
+        { name: 'Jan', resolved: 12, pending: 3 },
+        { name: 'Feb', resolved: 15, pending: 2 },
+        { name: 'Mar', resolved: 8, pending: 5 },
+        { name: 'Apr', resolved: 20, pending: 1 },
+        { name: 'May', resolved: 18, pending: 4 },
+        { name: 'Jun', resolved: stats.resolvedIssues || 14, pending: stats.pendingIssues || 3 },
+      ];
 
   const occupancyRate = stats.totalUnits > 0 ? ((stats.occupied / stats.totalUnits) * 100).toFixed(0) : '0';
 
@@ -107,7 +127,7 @@ const ExecutiveAnalytics: React.FC = () => {
               <DollarSign className="w-4 h-4 text-warning" />
               <span className="text-xs text-muted-foreground uppercase">Recovered</span>
             </div>
-            <p className="text-2xl font-bold text-foreground">${stats.totalRecovered.toFixed(0)}</p>
+            <p className="text-2xl font-bold text-foreground">${stats.totalRecovered.toLocaleString()}</p>
             <p className="text-xs text-muted-foreground">from deposit deductions</p>
           </div>
 
@@ -178,15 +198,15 @@ const ExecutiveAnalytics: React.FC = () => {
           <div className="space-y-3">
             <div className="flex justify-between py-2 border-b border-border">
               <span className="text-muted-foreground">Total Deposits Held</span>
-              <span className="font-bold text-foreground">${stats.totalDeposits.toFixed(2)}</span>
+              <span className="font-bold text-foreground">${stats.totalDeposits.toLocaleString()}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-border">
               <span className="text-muted-foreground">Total Deductions Applied</span>
-              <span className="font-bold text-destructive">-${stats.totalDeductions.toFixed(2)}</span>
+              <span className="font-bold text-destructive">-${stats.totalDeductions.toLocaleString()}</span>
             </div>
             <div className="flex justify-between py-2">
               <span className="font-bold text-foreground">Net Returned to Employees</span>
-              <span className="font-bold text-success">${(stats.totalDeposits - stats.totalDeductions).toFixed(2)}</span>
+              <span className="font-bold text-success">${(stats.totalDeposits - stats.totalDeductions).toLocaleString()}</span>
             </div>
           </div>
         </div>
