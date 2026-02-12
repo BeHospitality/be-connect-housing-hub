@@ -22,6 +22,7 @@ export enum View {
   PROFILE = 'profile',
   SMART_MATCHING = 'smart_matching',
   EMPLOYEE_MANAGEMENT = 'employee_management',
+  RESIDENT_DEPOSIT = 'resident_deposit',
 }
 
 // Database types

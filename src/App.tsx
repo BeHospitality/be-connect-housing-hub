@@ -14,6 +14,8 @@ import EmployeeManagement from "@/components/manager/EmployeeManagement";
 import FinalStatement from "@/components/manager/FinalStatement";
 import ResidentHome from "@/components/resident/ResidentHome";
 import ReportIssue from "@/components/resident/ReportIssue";
+import ResidentProfile from "@/components/resident/ResidentProfile";
+import ResidentDepositView from "@/components/resident/ResidentDepositView";
 import Auth from "@/pages/Auth";
 
 const queryClient = new QueryClient();
@@ -27,17 +29,14 @@ const AppContent: React.FC = () => {
       switch (activeView) {
         case View.REPORT_ISSUE:
           return <ReportIssue onBack={() => setActiveView(View.RESIDENT_HOME)} />;
+        case View.PROFILE:
+          return <ResidentProfile />;
+        case View.RESIDENT_DEPOSIT:
+          return <ResidentDepositView />;
         case View.INBOX:
           return (
             <div className="p-4">
               <h1 className="text-xl font-bold">Messages</h1>
-              <p className="text-muted-foreground">Coming soon...</p>
-            </div>
-          );
-        case View.PROFILE:
-          return (
-            <div className="p-4">
-              <h1 className="text-xl font-bold">My Profile</h1>
               <p className="text-muted-foreground">Coming soon...</p>
             </div>
           );
