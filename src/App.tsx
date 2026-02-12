@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppProvider, useAppContext } from "@/context/AppContext";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { AppMode, View } from "@/types";
 import Layout from "@/components/Layout";
 import Dashboard from "@/components/manager/Dashboard";
@@ -13,6 +14,7 @@ import EmployeeManagement from "@/components/manager/EmployeeManagement";
 import FinalStatement from "@/components/manager/FinalStatement";
 import ResidentHome from "@/components/resident/ResidentHome";
 import ReportIssue from "@/components/resident/ReportIssue";
+import Auth from "@/pages/Auth";
 
 const queryClient = new QueryClient();
 
@@ -87,16 +89,39 @@ const AppContent: React.FC = () => {
   );
 };
 
+const AuthGate: React.FC = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-secondary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-sm text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return <Auth />;
+
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
+  );
+};
+
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppProvider>
+      <AuthProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <AppContent />
+          <AuthGate />
         </TooltipProvider>
-      </AppProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };
