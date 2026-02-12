@@ -176,6 +176,7 @@ export type Database = {
       }
       issues: {
         Row: {
+          attributed_to: string | null
           created_at: string
           description: string | null
           estimated_cost: number | null
@@ -188,6 +189,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          attributed_to?: string | null
           created_at?: string
           description?: string | null
           estimated_cost?: number | null
@@ -200,6 +202,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          attributed_to?: string | null
           created_at?: string
           description?: string | null
           estimated_cost?: number | null
@@ -212,6 +215,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "issues_attributed_to_fkey"
+            columns: ["attributed_to"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "issues_reported_by_fkey"
             columns: ["reported_by"]
@@ -437,11 +447,56 @@ export type Database = {
         }
         Relationships: []
       }
+      vendor_assignments: {
+        Row: {
+          assigned_at: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          issue_id: string
+          notes: string | null
+          status: string
+          vendor_contact: string | null
+          vendor_name: string
+        }
+        Insert: {
+          assigned_at?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          issue_id: string
+          notes?: string | null
+          status?: string
+          vendor_contact?: string | null
+          vendor_name: string
+        }
+        Update: {
+          assigned_at?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          issue_id?: string
+          notes?: string | null
+          status?: string
+          vendor_contact?: string | null
+          vendor_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_assignments_issue_id_fkey"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      check_unit_occupancy: { Args: { _unit_id: string }; Returns: Json }
       get_user_app_mode: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {

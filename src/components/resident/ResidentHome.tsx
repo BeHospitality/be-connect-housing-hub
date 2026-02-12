@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Calendar, AlertTriangle, User, MessageSquare, ChevronRight, Building } from 'lucide-react';
+import { MapPin, Calendar, AlertTriangle, User, MessageSquare, ChevronRight, Building, DollarSign } from 'lucide-react';
 import { useAppContext } from '@/context/AppContext';
 import { View, Issue, Employee, Announcement } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
@@ -45,8 +45,9 @@ const ResidentHome: React.FC = () => {
 
   const quickActions = [
     { icon: AlertTriangle, label: 'Report Issue', view: View.REPORT_ISSUE, color: 'bg-destructive/10 text-destructive' },
+    { icon: DollarSign, label: 'My Deposit', view: View.RESIDENT_DEPOSIT, color: 'bg-success/10 text-success' },
     { icon: User, label: 'My Profile', view: View.PROFILE, color: 'bg-secondary/10 text-secondary' },
-    { icon: MessageSquare, label: 'Messages', view: View.INBOX, color: 'bg-success/10 text-success' },
+    { icon: MessageSquare, label: 'Messages', view: View.INBOX, color: 'bg-info/10 text-info' },
   ];
 
   return (
@@ -88,7 +89,7 @@ const ResidentHome: React.FC = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-4 gap-3">
           {quickActions.map((action) => (
             <button
               key={action.label}
