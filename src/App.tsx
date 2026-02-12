@@ -12,10 +12,13 @@ import InspectionComparison from "@/components/manager/InspectionComparison";
 import SmartMatching from "@/components/manager/SmartMatching";
 import EmployeeManagement from "@/components/manager/EmployeeManagement";
 import FinalStatement from "@/components/manager/FinalStatement";
+import VendorWorkOrders from "@/components/manager/VendorWorkOrders";
+import ExecutiveAnalytics from "@/components/manager/ExecutiveAnalytics";
 import ResidentHome from "@/components/resident/ResidentHome";
 import ReportIssue from "@/components/resident/ReportIssue";
 import ResidentProfile from "@/components/resident/ResidentProfile";
 import ResidentDepositView from "@/components/resident/ResidentDepositView";
+import MessagingHub from "@/components/shared/MessagingHub";
 import Auth from "@/pages/Auth";
 
 const queryClient = new QueryClient();
@@ -34,12 +37,7 @@ const AppContent: React.FC = () => {
         case View.RESIDENT_DEPOSIT:
           return <ResidentDepositView />;
         case View.INBOX:
-          return (
-            <div className="p-4">
-              <h1 className="text-xl font-bold">Messages</h1>
-              <p className="text-muted-foreground">Coming soon...</p>
-            </div>
-          );
+          return <MessagingHub />;
         default:
           return <ResidentHome />;
       }
@@ -52,6 +50,8 @@ const AppContent: React.FC = () => {
         return <Dashboard />;
       case View.MAINTENANCE:
         return <MaintenanceHub />;
+      case View.MAINTENANCE_SCHEDULE:
+        return <VendorWorkOrders />;
       case View.INSPECTION_COMPARISON:
         return <InspectionComparison />;
       case View.SMART_MATCHING:
@@ -63,19 +63,9 @@ const AppContent: React.FC = () => {
       case View.TEAM_MANAGEMENT:
         return <SmartMatching />;
       case View.ANALYTICS:
-        return (
-          <div className="p-4">
-            <h1 className="text-xl font-bold">Settings</h1>
-            <p className="text-muted-foreground">Coming soon...</p>
-          </div>
-        );
+        return <ExecutiveAnalytics />;
       case View.INBOX:
-        return (
-          <div className="p-4">
-            <h1 className="text-xl font-bold">Messages</h1>
-            <p className="text-muted-foreground">Coming soon...</p>
-          </div>
-        );
+        return <MessagingHub />;
       default:
         return <Dashboard />;
     }

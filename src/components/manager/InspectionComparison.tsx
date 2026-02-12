@@ -8,14 +8,28 @@ import { useAppContext } from '@/context/AppContext';
 import { View } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { uploadFile } from '@/lib/storage';
 
 const InspectionComparison: React.FC = () => {
   const { setActiveView } = useAppContext();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [damageDetected, setDamageDetected] = useState(true);
   const [repairCost, setRepairCost] = useState('125.00');
   const [inspectorNotes, setInspectorNotes] = useState('');
   const [loading, setLoading] = useState(false);
+  const [moveOutPhoto, setMoveOutPhoto] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handlePhotoCapture = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const url = await uploadFile(file, 'inspections', user?.id);
+    if (url) setMoveOutPhoto(url);
+    setUploading(false);
+  };
 
   const handleConfirmCapture = async () => {
     setLoading(true);
@@ -37,6 +51,7 @@ const InspectionComparison: React.FC = () => {
         damage_detected: damageDetected,
         repair_cost: damageDetected ? parseFloat(repairCost) : 0,
         inspector_notes: inspectorNotes,
+        photo_url: moveOutPhoto,
         status: 'completed',
       });
 
@@ -108,17 +123,25 @@ const InspectionComparison: React.FC = () => {
         </div>
 
         {/* Move-Out Photo */}
-        <div className="inspection-photo bg-muted">
-          <div className="w-full h-full flex flex-col items-center justify-center">
-            <div className="w-16 h-16 rounded-full bg-card shadow-lg flex items-center justify-center mb-2">
-              <Camera className="w-8 h-8 text-muted-foreground" />
+        <label className="inspection-photo bg-muted cursor-pointer">
+          {moveOutPhoto ? (
+            <img src={moveOutPhoto} alt="Move-out condition" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-card shadow-lg flex items-center justify-center mb-2">
+                <Camera className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <p className="text-xs text-muted-foreground">{uploading ? 'Uploading...' : 'Tap to capture'}</p>
             </div>
-          </div>
+          )}
+          <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handlePhotoCapture} />
           <span className="inspection-label-moveout">MOVE-OUT</span>
-          <div className="absolute bottom-2 right-2 bg-secondary text-secondary-foreground text-xs px-2 py-0.5 rounded-full">
-            LIVE
-          </div>
-        </div>
+          {moveOutPhoto && (
+            <div className="absolute bottom-2 right-2 bg-success text-success-foreground text-xs px-2 py-0.5 rounded-full">
+              CAPTURED
+            </div>
+          )}
+        </label>
       </div>
 
       {/* Status Row */}

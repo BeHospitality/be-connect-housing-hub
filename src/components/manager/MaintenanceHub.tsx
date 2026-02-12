@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Search, Calendar, Clock, AlertTriangle, CheckCircle2, FileText } from 'lucide-react';
+import { ChevronLeft, Search, Calendar, Clock, AlertTriangle, CheckCircle2, FileText, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAppContext } from '@/context/AppContext';
@@ -63,14 +63,14 @@ const MaintenanceHub: React.FC = () => {
 
       <div className="p-4 space-y-4">
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           <Button
             variant="outline"
             className="h-20 flex flex-col gap-2"
             onClick={() => setActiveView(View.INSPECTION_COMPARISON)}
           >
             <Calendar className="w-6 h-6 text-secondary" />
-            <span className="text-sm font-medium">Inspection Tool</span>
+            <span className="text-xs font-medium">Inspections</span>
           </Button>
           <Button
             variant="outline"
@@ -78,7 +78,15 @@ const MaintenanceHub: React.FC = () => {
             onClick={() => setActiveView(View.FINAL_STATEMENT)}
           >
             <FileText className="w-6 h-6 text-success" />
-            <span className="text-sm font-medium">Deposit Statement</span>
+            <span className="text-xs font-medium">Deposits</span>
+          </Button>
+          <Button
+            variant="outline"
+            className="h-20 flex flex-col gap-2"
+            onClick={() => setActiveView(View.MAINTENANCE_SCHEDULE)}
+          >
+            <Truck className="w-6 h-6 text-warning" />
+            <span className="text-xs font-medium">Vendors</span>
           </Button>
         </div>
 
