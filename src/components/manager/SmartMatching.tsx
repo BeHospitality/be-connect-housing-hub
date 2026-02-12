@@ -5,6 +5,7 @@ import { useAppContext } from '@/context/AppContext';
 import { View, Employee, Unit } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useClientId } from '@/hooks/useClientId';
 
 interface MatchPairing {
   employee1: Employee;
@@ -16,6 +17,7 @@ interface MatchPairing {
 const SmartMatching: React.FC = () => {
   const { setActiveView } = useAppContext();
   const { toast } = useToast();
+  const { clientId } = useClientId();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
   const [pairings, setPairings] = useState<MatchPairing[]>([]);
@@ -114,6 +116,7 @@ const SmartMatching: React.FC = () => {
         unit_id: pairing.suggestedUnit.id,
         match_score: pairing.matchScore,
         confirmed: true,
+        client_id: clientId,
       });
 
       toast({

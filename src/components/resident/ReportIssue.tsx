@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useClientId } from '@/hooks/useClientId';
 import { uploadFile } from '@/lib/storage';
 import { Employee } from '@/types';
 
@@ -17,6 +18,7 @@ interface ReportIssueProps {
 const ReportIssue: React.FC<ReportIssueProps> = ({ onBack }) => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { clientId } = useClientId();
   const [loading, setLoading] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -87,6 +89,7 @@ const ReportIssue: React.FC<ReportIssueProps> = ({ onBack }) => {
         priority: formData.priority,
         status: 'pending',
         attributed_to: formData.attributed_to || null,
+        client_id: clientId,
       });
 
       if (error) throw error;

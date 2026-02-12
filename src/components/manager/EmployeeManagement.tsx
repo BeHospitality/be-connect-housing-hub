@@ -8,10 +8,12 @@ import { useAppContext } from '@/context/AppContext';
 import { View, Employee, Gender, SleepSchedule } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useClientId } from '@/hooks/useClientId';
 
 const EmployeeManagement: React.FC = () => {
   const { setActiveView } = useAppContext();
   const { toast } = useToast();
+  const { clientId } = useClientId();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -54,6 +56,7 @@ const EmployeeManagement: React.FC = () => {
         gender: formData.gender,
         sleep_schedule: formData.sleep_schedule,
         hobbies: hobbiesArray,
+        client_id: clientId,
       });
 
       if (error) throw error;
@@ -103,6 +106,7 @@ const EmployeeManagement: React.FC = () => {
               gender: (gender?.toLowerCase() || 'prefer_not_to_say') as Gender,
               sleep_schedule: (sleep_schedule?.toLowerCase().replace(' ', '_') || 'flexible') as SleepSchedule,
               hobbies: hobbies ? hobbies.split(';').map(h => h.trim()) : [],
+              client_id: clientId,
             };
           });
 
